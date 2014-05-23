@@ -1,6 +1,6 @@
-(defproject k2nr.docker "0.0.1-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+(defproject k2nr/docker "0.0.1"
+  :description "Docker Remote API client library for Clojure"
+  :url "https://github.com/k2nr/docker-clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
