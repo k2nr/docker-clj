@@ -62,22 +62,28 @@
                      :as :json
                      :body (json/generate-string host-config)}))))
 
-(defn attach [cli container & {:keys [logs stream stdin stdout stderr]}]
-  (client/post cli (path container "/attach")
-               {:query-params {:logs logs
-                               :stream stream
-                               :stdin  stdin
-                               :stdout stdout
-                               :stderr stderr}
-                :as :stream}))
+(defn attach [cli container & {:keys [logs stream stdin stdout stderr stream-fn]}]
+  (let [resp (client/post cli (path container "/attach")
+                     {:query-params {:logs logs
+                                     :stream stream
+                                     :stdin  stdin
+                                     :stdout stdout
+                                     :stderr stderr}
+                      :as :stream})]
+    (if stream
+      (raw-stream-fetcher resp stream-fn)
+      (raw-stream->seq resp))))
 
-(defn logs [cli container & {:keys [follow stdout stderr timestamps]}]
-  (client/get cli (path container "/logs")
-              {:query-params {:follow follow
-                              :stdout stdout
-                              :stderr stderr
-                              :timestamps timestamps}
-               :as :stream}))
+(defn logs [cli container & {:keys [follow stdout stderr timestamps stream-fn]}]
+  (let [resp (client/get cli (path container "/logs")
+                         {:query-params {:follow follow
+                                         :stdout stdout
+                                         :stderr stderr
+                                         :timestamps timestamps}
+                          :as :stream})]
+    (if follow
+      (raw-stream-fetcher resp stream-fn)
+      (raw-stream->seq resp))))
 
 (defn list [cli & {:keys [all limit since before size]}]
   (client/get cli "/containers/json"

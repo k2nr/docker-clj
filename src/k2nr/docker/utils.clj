@@ -28,12 +28,16 @@
     2 :stderr
     :unrecognized))
 
-(defn raw-stream->map [stream]
-  (let [[stream-type _ _ _] (vec (read-bytes stream 4))
-        size (bytes->int (read-bytes stream 4))
-        body (bytes->string (read-bytes stream size))]
-    {:stream-type (int->stream-type stream-type)
-     :body body}))
+(defn raw-stream->seq [stream]
+  (let [header (read-bytes stream 4)]
+    (if (nil? header)
+      nil
+      (let [[stream-type _ _ _] (vec header)
+            size (bytes->int (read-bytes stream 4))
+            body (bytes->string (read-bytes stream size))
+            m  {:stream-type (int->stream-type stream-type)
+                :body body}]
+        (cons m (lazy-seq (raw-stream->seq stream)))))))
 
 (defn raw-stream-fetcher [stream stream-cb]
   (loop [header (read-bytes stream 4)]
@@ -45,6 +49,18 @@
          (stream-cb {:stream-type (int->stream-type stream-type)
                      :body body})
          (recur (read-bytes stream 4)))))))
+
+(defn json-stream->seq [stream & {:keys [as] :or [as :json]}]
+  (with-open [r (io/reader stream)]
+    (let [line (.readLine r)]
+      (if (nil? line)
+        nil
+        (cons (case as
+                :string line
+                :json (json/decode line)
+                line)
+              (lazy-seq (json-stream->seq stream)))))))
+
 
 (defn json-stream-fetcher [stream stream-cb & {:keys [as] :or [as :json]}]
   (with-open [r (io/reader stream)]
