@@ -78,13 +78,13 @@
 
 (defn commit [cli container & {:keys [repo tag message author]}]
   (utils/map-keys ->kebab-case
-            (client/post cli "/commit"
-                        {:query-params {:container container
-                                        :repo      repo
-                                        :tag       tag
-                                        :m         message
-                                        :author    author}
-                         :as :json})))
+                  (client/post cli "/commit"
+                               {:query-params {:container container
+                                               :repo      repo
+                                               :tag       tag
+                                               :m         message
+                                               :author    author}
+                                :as :json})))
 
 (defn events [cli & {:keys [since until stream stream-fn]}]
   (let [resp (client/get cli "/events"
