@@ -11,4 +11,5 @@
                  [org.apache.commons/commons-io "1.3.2"]
                  [camel-snake-kebab "0.1.5"]
                  ]
+  :plugins [[codox "0.8.7"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]]}})
