@@ -115,3 +115,11 @@
   (client/get cli (path container "/top")
               {:query-params {:ps_args ps-args}
                :as :json}))
+
+(defn changes [cli container]
+  (client/get cli (path container "/changes")
+               {:as :json}))
+
+(defn wait [cli container]
+  (client/post cli (path container "/wait")
+               {:as :json}))

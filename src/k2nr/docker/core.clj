@@ -14,6 +14,9 @@
 (defn version [cli]
   (client/get cli "/version" {:as :json}))
 
+(defn info [cli]
+  (client/get cli "/info" {:as :json}))
+
 (defn run [cli image & {:keys [; create host config
                                hostname
                                domainname
