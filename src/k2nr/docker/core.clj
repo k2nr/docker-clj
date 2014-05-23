@@ -85,3 +85,12 @@
                                         :m         message
                                         :author    author}
                          :as :json})))
+
+(defn events [cli & {:keys [since until stream stream-fn]}]
+  (let [resp (client/get cli "/events"
+                         {:query-params {:since since
+                                         :until until}
+                          :as :stream})]
+    (if stream
+      (utils/json-stream-fetcher resp stream-fn)
+      resp)))
