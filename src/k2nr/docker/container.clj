@@ -79,7 +79,7 @@
                               :timestamps timestamps}
                :as :stream}))
 
-(defn list [cli & {:keys [all limit since before  size]}]
+(defn list [cli & {:keys [all limit since before size]}]
   (client/get cli "/containers/json"
               {:query-params {:all all
                               :limit limit

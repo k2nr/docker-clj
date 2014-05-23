@@ -29,6 +29,11 @@
     (delete-file tar)
     response))
 
+(defn list [cli & {:keys [all]}]
+  (client/get cli "/images/json"
+              {:query-params {:all all}
+               :as :json}))
+
 (defn create [cli name & {:keys [repo tag registry stream]}]
   (client/post cli "/images/create"
                {:query-params {:fromImage name
