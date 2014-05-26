@@ -22,7 +22,7 @@
   (apply str (map char bs)))
 
 (defn int->stream-type [n]
-  (case n
+  (condp = n
     0 :stdin
     1 :stdout
     2 :stderr

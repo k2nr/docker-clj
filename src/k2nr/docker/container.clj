@@ -2,7 +2,8 @@
   (:require [k2nr.docker.client :as client]
             [k2nr.docker.utils :refer :all]
             [cheshire.core :as json]
-            [camel-snake-kebab :refer[->kebab-case ->CamelCase]]))
+            [camel-snake-kebab :refer[->kebab-case ->CamelCase]])
+  (:refer-clojure :exclude (list remove)))
 
 (defn- path [& strs]
   (apply str "/containers/" strs))

@@ -2,7 +2,8 @@
   (:require [k2nr.docker.client :as client]
             [cheshire.core :as json]
             [k2nr.docker.tar :refer [create-archive with-open-tar add-entry]]
-            [clojure.java.io :refer [file input-stream delete-file]]))
+            [clojure.java.io :refer [file input-stream delete-file]])
+  (:refer-clojure :exclude (list remove)))
 
 (defn build-from-stream [cli body-stream & {:keys [name quiet no-cache stream]}]
   (client/post cli "/build"

@@ -1,6 +1,7 @@
 (ns k2nr.docker.client
   (:require [clj-http.client :as http]
-            [slingshot.slingshot :refer [throw+ try+]]))
+            [slingshot.slingshot :refer [throw+ try+]])
+  (:refer-clojure :exclude (get methods)))
 
 (defprotocol DockerClient
   (url [this path]))
