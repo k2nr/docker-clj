@@ -7,12 +7,12 @@ Docker remote API library for Clojure.
 Add this dependency to your `project.clj`
 
 ```
-[k2nr/docker "0.0.1"]
+[k2nr/docker "0.0.2"]
 ```
 
 ## Usage
 
-k2nr.docker is designed to communicate with [Docker Remote API](http://docs.docker.io/reference/api/docker_remote_api/).
+k2nr/docker is designed to communicate with [Docker Remote API](http://docs.docker.io/reference/api/docker_remote_api/).
 
 ### 1. Create client
 
