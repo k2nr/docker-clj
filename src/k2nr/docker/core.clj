@@ -71,7 +71,7 @@
     (container/start cli container-id
                      :binds             binds
                      :lxc-conf          lxc-conf
-                     :port-bindigs      port-bindings
+                     :port-bindings      port-bindings
                      :publish-all-ports publish-all-ports
                      :privileged        privileged)
     container-id))
