@@ -8,8 +8,37 @@
 (defn- path [& strs]
   (apply str "/containers/" strs))
 
+(defn- ->port-bindings [bindings]
+  (reduce (fn [m [host container]]
+            (update-in m [(str container "/tcp")]
+                       #(if %
+                          (conj % {"HostPort" (str host)})
+                          [{"HostPort" (str host)}])))
+          {} bindings))
+
+(defn- ->env [envs]
+  (mapv (fn [[k v]] (str k "=" v)) envs))
+
+(defn- ->exposed-ports [ports]
+  (reduce (fn [m port]
+            (assoc-in m [(str port "/tcp")] {}))
+          {} ports))
+
+(defn- ->volumes [vs]
+  (reduce #(assoc-in %1 [%2] {}) {} vs))
+
+(defn- update-if [m k f & args]
+  (if (k m)
+    (apply update-in m [k] f args)
+    m))
+
 (defn ->host-config [config]
-  (map-keys ->CamelCase config))
+  (-> config
+      (update-if :port-bindings ->port-bindings)
+      (update-if :env ->env)
+      (update-if :exposed-ports ->exposed-ports)
+      (update-if :volumes ->volumes)
+      (#(map-keys ->CamelCase %))))
 
 (defn create-from-config [cli host-config & {:keys [name]}]
   (map-keys ->kebab-case
