@@ -1,4 +1,4 @@
-(defproject k2nr/docker "0.0.2"
+(defproject k2nr/docker "0.0.3-SNAPSHOT"
   :description "Docker Remote API client library for Clojure"
   :url "https://github.com/k2nr/docker-clj"
   :license {:name "Eclipse Public License"
