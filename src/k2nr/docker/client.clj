@@ -47,4 +47,7 @@
 
 (defn make-client
   ([] (make-client "localhost:4243"))
-  ([host] (Client. host)))
+  ([url] (let [host (if-let [re (re-seq #"^tcp://(.*$)" url)]
+                       (second (first re))
+                       url)]
+            (Client. host))))
