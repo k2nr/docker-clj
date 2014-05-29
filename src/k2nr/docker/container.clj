@@ -20,12 +20,10 @@
   (mapv (fn [[k v]] (str k "=" v)) envs))
 
 (defn- ->exposed-ports [ports]
-  (reduce (fn [m port]
-            (assoc-in m [(str port "/tcp")] {}))
-          {} ports))
+  (into {} (map #(vector (str % "/tcp") {}) ports)))
 
 (defn- ->volumes [vs]
-  (reduce #(assoc-in %1 [%2] {}) {} vs))
+  (into {} (map #(vector % {}) vs)))
 
 (defn- update-if [m k f & args]
   (if (k m)
@@ -42,7 +40,7 @@
 
 (defn create-from-config [cli host-config & {:keys [name]}]
   (map-keys ->kebab-case
-            (client/post cli "/containers/create"
+            (client/post cli (path "create")
                          {:content-type :json
                           :query-params {:name name}
                           :as :json
@@ -116,7 +114,7 @@
       (raw-stream->seq resp))))
 
 (defn list [cli & {:keys [all limit since before size]}]
-  (client/get cli "/containers/json"
+  (client/get cli (path "json")
               {:query-params {:all all
                               :limit limit
                               :since since

@@ -5,6 +5,9 @@
             [clojure.java.io :refer [file input-stream delete-file]])
   (:refer-clojure :exclude (list remove)))
 
+(defn- path [& strs]
+  (apply str "/images/" strs))
+
 (defn build-from-stream [cli body-stream & {:keys [name quiet no-cache stream]}]
   (client/post cli "/build"
                {:headers {"Content-Type" "application/tar"}
@@ -31,12 +34,12 @@
     response))
 
 (defn list [cli & {:keys [all]}]
-  (client/get cli "/images/json"
+  (client/get cli (path "json")
               {:query-params {:all all}
                :as :json}))
 
 (defn create [cli name & {:keys [repo tag registry stream]}]
-  (client/post cli "/images/create"
+  (client/post cli (path "create")
                {:query-params {:fromImage name
                                :repo      repo
                                :tag       tag
@@ -44,26 +47,26 @@
                 :as (if stream :stream :json)}))
 
 (defn push [cli name & {:keys [registry stream]}]
-  (client/post cli (str "/images/" name "/push")
+  (client/post cli (path name "/push")
                {:query-params {:registry registry}
                 :as (if stream :stream :json)}))
 
 (defn tag [cli name & {:keys [repo force]}]
-  (client/post cli (str "/images" name "/tag")
+  (client/post cli (path name "/tag")
                {:query-params {:repo repo
                                :force force}}))
 
 (defn remove [cli name & {:keys [force noprune]}]
-  (client/delete cli (str "/images/" name)
+  (client/delete cli (path name)
                  {:query-params {:force force
                                  :noprune noprune}
                   :as :json}))
 
 (defn search [cli term]
-  (client/get cli "/images/search"
+  (client/get cli (path "search")
               {:query-params {:term term}
                :as :json}))
 
 (defn history [cli name]
-  (client/get cli (str "/images/" name "/history")
+  (client/get cli (path name "/history")
               {:as :json}))
