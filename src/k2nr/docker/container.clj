@@ -11,9 +11,7 @@
 (defn- ->port-bindings [bindings]
   (reduce (fn [m [host container]]
             (update-in m [(str container "/tcp")]
-                       #(if %
-                          (conj % {"HostPort" (str host)})
-                          [{"HostPort" (str host)}])))
+                       (fnil #(conj % {"HostPort" (str host)}) [])))
           {} bindings))
 
 (defn- ->env [envs]
