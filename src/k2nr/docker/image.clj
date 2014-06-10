@@ -8,12 +8,14 @@
 (defn- path [& strs]
   (apply str "/images/" strs))
 
-(defn build-from-stream [cli body-stream & {:keys [name quiet no-cache stream]}]
+(defn build-from-stream [cli body-stream & {:keys [name quiet no-cache remove force-remove stream]}]
   (client/post cli "/build"
                {:headers {"Content-Type" "application/tar"}
                 :query-params {:t name
                                :q quiet
-                               :nocache no-cache}
+                               :nocache no-cache
+                               :rm remove
+                               :forcerm force-remove}
                 :body body-stream
                 :as (if stream :stream :json)}))
 
