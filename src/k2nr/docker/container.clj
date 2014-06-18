@@ -1,5 +1,6 @@
 (ns k2nr.docker.container
-  (:require [k2nr.docker.client :as client]
+  (:require [clojure.string :as str]
+            [k2nr.docker.client :as client]
             [k2nr.docker.utils :refer :all]
             [cheshire.core :as json]
             [camel-snake-kebab :refer[->kebab-case ->CamelCase]])
@@ -149,3 +150,23 @@
 (defn wait [cli container]
   (client/post cli (path container "/wait")
                {:as :json}))
+
+(defn ports [cli container-id]
+  (let [container (inspect cli container-id)
+        bindings (-> container :HostConfig :PortBindings)]
+    (reduce (fn [m [k v]]
+              (let [private-port (->> (str/replace (str k) #"^:" "")
+                                      (re-seq #"([0-9]+)/tcp")
+                                      first
+                                      second
+                                      Integer.)
+                    hosts (map (fn [h] {:ip (:HostIp h)
+                                        :port (Integer. (:HostPort h))})
+                               v)]
+                (merge m {private-port hosts})))
+            {}
+            bindings)))
+
+(defn port [cli container-id private-port]
+  (let [ps (ports cli container-id)]
+    (first (get ps private-port))))
